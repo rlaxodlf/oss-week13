@@ -6,8 +6,12 @@
 //          Then send it as the first message, before the user's message, in ask().
 
 // ask("a question")  ->  the model's answer, as a string
+const SYSTEM = `답변은 아래의 기준을 지킨다.
+- 말투: 존댓말(해요체)로 답한다.
+- 길이: 한 문단, 세 문장 이내로 답한다.
+- 형식: 목록, 제목, 굵은 글씨 같은 마크다운을 쓰지 않는다.`;
+
 export async function ask(question) {
-  // TODO P3: write this function (see problems/P3_ask.md). Delete the throw line below.
   const res = await fetch(`${process.env.LLM_BASE_URL}/chat/completions`, {
     method: "POST",
     headers: {
@@ -16,7 +20,10 @@ export async function ask(question) {
     },
     body: JSON.stringify({
       model: process.env.LLM_MODEL,
-      messages: [{ role: "user", content: question }],
+      messages: [
+        { role: "system", content: SYSTEM },
+        { role: "user", content: question },
+      ],
     }),
   });
 
